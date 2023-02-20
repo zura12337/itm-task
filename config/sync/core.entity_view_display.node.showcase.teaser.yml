@@ -1,0 +1,46 @@
+uuid: a37dbc88-1b98-4860-a1d3-b92c12fb6fb9
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.showcase.body
+    - field.field.node.showcase.field_address
+    - field.field.node.showcase.field_article
+    - field.field.node.showcase.field_facebook_url
+    - field.field.node.showcase.field_featured
+    - field.field.node.showcase.field_featured_image
+    - field.field.node.showcase.field_logo_image
+    - field.field.node.showcase.field_short_description
+    - field.field.node.showcase.field_twitter_url
+    - node.type.showcase
+  module:
+    - text
+    - user
+id: node.showcase.teaser
+targetEntityType: node
+bundle: showcase
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_address: true
+  field_article: true
+  field_facebook_url: true
+  field_featured: true
+  field_featured_image: true
+  field_logo_image: true
+  field_short_description: true
+  field_twitter_url: true

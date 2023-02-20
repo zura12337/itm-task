@@ -22,6 +22,7 @@ module:
   help: 0
   history: 0
   image: 0
+  itm_showcase: 0
   link: 0
   menu_ui: 0
   node: 0
@@ -31,7 +32,10 @@ module:
   path_alias: 0
   quickedit: 0
   rdf: 0
+  rest: 0
+  restui: 0
   search: 0
+  serialization: 0
   shortcut: 0
   system: 0
   taxonomy: 0

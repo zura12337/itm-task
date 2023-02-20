@@ -1,0 +1,18 @@
+uuid: 36bfea4a-697d-4e55-8a53-7b1f7b0d6dfb
+langcode: en
+status: true
+dependencies:
+  module:
+    - itm_showcase
+    - serialization
+    - user
+id: itm_showcase
+plugin_id: itm_showcase
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - cookie
