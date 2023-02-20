@@ -6,26 +6,26 @@ use Drupal\Component\Plugin\DependentPluginInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\BcRoute;
-use Drupal\file\Entity\File;
+use Drupal\node\Entity\Node;
 use Drupal\rest\ModifiedResourceResponse;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Represents Showcase records as resources.
+ * Represents Get Single Showcase records as resources.
  *
  * @RestResource (
- *   id = "itm_showcase",
- *   label = @Translation("Showcases"),
+ *   id = "get_single_showcase",
+ *   label = @Translation("Get Single Showcase"),
  *   uri_paths = {
- *     "canonical" = "/api/list",
- *     "https://www.drupal.org/link-relations/create" = "/api/itm-showcase-example"
+ *     "canonical" = "/api/single/{id}",
+ *     "https://www.drupal.org/link-relations/create" = "/api/get-single-showcase"
  *   }
  * )
  *
@@ -39,7 +39,7 @@ use Zend\Diactoros\Response\JsonResponse;
  * For accessing Drupal entities through REST interface use
  * \Drupal\rest\Plugin\rest\resource\EntityResource plugin.
  */
-class GetShowcaseResource extends ResourceBase implements DependentPluginInterface
+class GetSingleShowcaseResource extends ResourceBase implements DependentPluginInterface
 {
 
   /**
@@ -122,46 +122,50 @@ class GetShowcaseResource extends ResourceBase implements DependentPluginInterfa
    * @param int $id
    *   The ID of the record.
    *
-   * @return JsonResponse
+   * @return \Drupal\rest\ResourceResponse
    *   The response containing the record.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    */
-  public function get()
+  public function get($id)
   {
     $nodeStorage = $this->entityTypeManager->getStorage('node');
     $fileStorage = $this->entityTypeManager->getStorage('file');
     $baseUrl = $this->currentRequest->getSchemeAndHttpHost();
-    $featured = $this->currentRequest->query->get('featured') ? '1' : '0';
-    $showcaseIds = $nodeStorage
-      ->getQuery()
-      ->condition('type', 'showcase')
-      ->condition('field_featured', $featured ? '1' : '0')
-      ->pager(3)
-      ->addTag('sort_by_random')
-      ->execute();
-    $showcases = $nodeStorage->loadMultiple($showcaseIds);
+    $showcase = $nodeStorage->getQuery()->condition('type', 'showcase')->condition('nid', $id)->execute();
+    $showcase = reset($showcase);
+    $showcase = $nodeStorage->load($showcase);
+    /** @var Node $showcase */
     $result = [];
-    /** @var \Drupal\node\Entity\Node $showcase */
-    foreach ($showcases as $showcase) {
-      $file = $showcase->get('field_featured_image')->target_id;
-      if ($file) {
-        /** @var File $file_uri */
-        $file_uri = $baseUrl . $fileStorage->load($file['target_id'])->createFileUrl();
-      }
-      $articleId = $showcase->get('field_article')->getValue();
-      $articleId = reset($articleId);
+    if ($showcase) {
+      $featured_image = $showcase->get('field_featured_image')->target_id;
+      $featured_image_uri = $featured_image ? $baseUrl . $fileStorage->load($featured_image)->createFileUrl() : '';
+
+      $logo = $showcase->get('field_logo_image')->target_id;
+      $logo_uri = $logo ? $baseUrl . $fileStorage->load($logo)->createFileUrl() : '';
+
+      $articleId = $showcase->get('field_article')->target_id;
       $article = $nodeStorage->load($articleId['target_id']);
-      $result[] = [
-        'featured_image' => $file_uri,
+
+      $result = [
         'title' => $showcase->get('title')->value,
+        'nid' => $showcase->get('nid')->value,
+        'short_description' => $showcase->get('field_short_description')->value,
+        'description' => $showcase->get('body')->value,
+        'address' => $showcase->get('field_address')->value,
+        'facebook_url' => $showcase->get('field_facebook_url')->uri,
+        'twitter_url' => $showcase->get('field_twitter_url')->uri,
+        'featured_image' => $featured_image_uri,
+        'logo' => $logo_uri,
         'article' => [
           'title' => $article->get('title')->value,
+          'nid' => $article->get('nid')->value,
           'url' => $baseUrl . '/node/' . $article->id(),
-        ],
+        ]
       ];
+      return new JsonResponse($result, 200);
     }
-    return new JsonResponse($result);
+    return new JsonResponse([], 404);
   }
 
   /**
