@@ -1,0 +1,4 @@
+administer itm_showcase configuration:
+  title: 'Administer itm_showcase configuration'
+  description: 'Optional description.'
+  restrict access: true
