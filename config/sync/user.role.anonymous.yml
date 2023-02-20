@@ -12,7 +12,5 @@ permissions:
   - 'access comments'
   - 'access content'
   - 'access site-wide contact form'
-  - 'restful get get_single_showcase'
-  - 'restful get itm_showcase'
   - 'search content'
   - 'use text format restricted_html'
