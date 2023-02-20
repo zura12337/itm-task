@@ -1,0 +1,14 @@
+uuid: 1a81fb96-5fba-4655-b64f-8f648d2f25a2
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.consumer
+  module:
+    - user
+id: user_add_role_action.consumer
+label: 'Add the Consumer role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: consumer

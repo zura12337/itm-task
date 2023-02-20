@@ -1,4 +1,4 @@
-uuid: 36bfea4a-697d-4e55-8a53-7b1f7b0d6dfb
+uuid: 4e46944a-d689-4e8f-8e72-8676b5c86383
 langcode: en
 status: true
 dependencies:
@@ -7,8 +7,8 @@ dependencies:
     - serialization
     - simple_oauth
     - user
-id: itm_showcase
-plugin_id: itm_showcase
+id: get_single_showcase
+plugin_id: get_single_showcase
 granularity: resource
 configuration:
   methods:

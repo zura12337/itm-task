@@ -1,0 +1,9 @@
+uuid: db7ab41b-c581-43e7-94fa-fc9791ce73df
+langcode: en
+status: true
+dependencies: {  }
+id: consumer
+label: Consumer
+weight: 3
+is_admin: null
+permissions: {  }
